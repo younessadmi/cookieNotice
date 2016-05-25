@@ -6,6 +6,7 @@ $(document).ready(function(){
     var position = $('#cookienotice_data .cookienotice_position').html();
     var opacity = 90;
     var cookielaw = $("#cookienotice_data .cookienotice_law").html();
+    var cookielawlink = $("#cookienotice_data .cookienotice_law_link").html();
 
     var cookiename= 'cookienotice_accepted';
     var areCookiesAccepted = ($('#cookienotice_data .cookienotice_accepted').html() == 'on') ? true : false;
@@ -21,8 +22,8 @@ $(document).ready(function(){
             setCookie(cookiename, 'accepted', timeToHideTheNotification*1000);
         });
     }
-    if(cookielaw != true){
-        $('.cookienotice_block_home .cookienotice_button_text').append("<a class='btn btn-default' href='http://www.webrankinfo.com/dossiers/webmastering/loi-cookies' target='_blank'>En savoir plus</a>");
+    if(cookielaw == true){
+        $('.cookienotice_block_home .cookienotice_button_text').append("<a class='btn btn-default' href="+cookielawlink+" target='_blank'>En savoir plus</a>");
     }
     $('.cookienotice_block_home').css('background-color', convertHex(backgroundColor, opacity));
     $('.cookienotice_block_home p.cookienotice_message').css('color', textColor);
