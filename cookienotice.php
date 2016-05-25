@@ -8,6 +8,7 @@ class CookieNotice extends Module {
         'cookienotice_button_text',
         'cookienotice_cookie_expiration',
         'cookienotice_law',
+        'cookienotice_law_link',
         'cookienotice_position',
         'cookienotice_animation',
         'cookienotice_text_color',
@@ -18,7 +19,7 @@ class CookieNotice extends Module {
     public function __construct() {
         $this->name = 'cookienotice';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.1';
+        $this->version = '1.1.0';
         $this->author = 'ESGI';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = [
@@ -40,6 +41,7 @@ class CookieNotice extends Module {
         $this->updateValue['cookienotice_button_text'] = "J'accepte";
         $this->updateValue['cookienotice_cookie_expiration'] = 60*60*24*30*6; // 6 mois
         $this->updateValue['cookienotice_law'] = "Non";
+        $this->updateValue['cookienotice_law_link'] = "https://www.cnil.fr/fr/cookies-traceurs-que-dit-la-loi";
         $this->updateValue['cookienotice_position'] = "Bas";
         $this->updateValue['cookienotice_animation'] = "Aucune";
         $this->updateValue['cookienotice_text_color'] = "#FFFFFF";
@@ -114,7 +116,7 @@ class CookieNotice extends Module {
                 [
                     'type' => 'text',
                     'label' => $this->l('Texte du bouton'),
-                    'desc' => $this->l("Le text de l'option pour accepter l'utilisation des cookies et faire disparaitre la notification"),
+                    'desc' => $this->l("Le texte de l'option pour accepter l'utilisation des cookies et faire disparaitre la notification"),
                     'name' => 'cookienotice_button_text',
                     'size' => 20,
                     'required' => true,
@@ -179,6 +181,12 @@ class CookieNotice extends Module {
                         ]
                     ],
                     'required' => true,
+                ],
+                [
+                    'type' => 'text',
+                    'label' => $this->l('Adresse du lien'),
+                    'desc' => $this->l("L'adresse du lien pour les infos supplémentaires concernant la législation"),
+                    'name' => 'cookienotice_law_link'
                 ],
                 [
                     'type' => 'radio',

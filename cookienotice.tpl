@@ -11,6 +11,7 @@
     <p class="cookienotice_button_text">{$cookienotice_button_text}</p>
     <p class="cookienotice_cookie_expiration">{$cookienotice_cookie_expiration}</p>
     <p class="cookienotice_law">{$cookienotice_law}</p>
+    <p class="cookienotice_law_link">{$cookienotice_law_link}</p>
     <p class="cookienotice_position">{$cookienotice_position}</p>
     <p class="cookienotice_animation">{$cookienotice_animation}</p>
     <p class="cookienotice_text_color">{$cookienotice_text_color}</p>
