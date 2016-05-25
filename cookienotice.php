@@ -7,6 +7,7 @@ class CookieNotice extends Module {
         'cookienotice_message',
         'cookienotice_button_text',
         'cookienotice_cookie_expiration',
+        'cookienotice_law',
         'cookienotice_position',
         'cookienotice_animation',
         'cookienotice_text_color',
@@ -38,6 +39,7 @@ class CookieNotice extends Module {
         $this->updateValue['cookienotice_message'] = "Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site. Si vous continuez à utiliser ce dernier, nous considérerons que vous acceptez l'utilisation des cookies.";
         $this->updateValue['cookienotice_button_text'] = "J'accepte";
         $this->updateValue['cookienotice_cookie_expiration'] = 60*60*24*30*6; // 6 mois
+        $this->updateValue['cookienotice_law'] = "Non";
         $this->updateValue['cookienotice_position'] = "Bas";
         $this->updateValue['cookienotice_animation'] = "Aucune";
         $this->updateValue['cookienotice_text_color'] = "#FFFFFF";
@@ -157,6 +159,26 @@ class CookieNotice extends Module {
                         'id' => 'time',
                         'name' => 'name',
                     ],
+                ],
+                [
+                    'type' => 'radio',
+                    'label' => $this->l('Legislation'),
+                    'desc' => $this->l('Ajouter un lien vers des informations concernant la loi'),
+                    'name' => 'cookienotice_law',
+                    'is_bool' => true,
+                    'values' => [
+                        [
+                            'id' => 'law_yes',
+                            'value' => 'Oui',
+                            'label' => $this->l('Oui')
+                        ],
+                        [
+                            'id' => 'law_no',
+                            'value' => 'Non',
+                            'label' => $this->l('Non')
+                        ]
+                    ],
+                    'required' => true,
                 ],
                 [
                     'type' => 'radio',
