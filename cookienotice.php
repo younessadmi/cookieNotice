@@ -3,16 +3,28 @@ if(!defined('_PS_VERSION_'))
     exit;
 
 class CookieNotice extends Module {
+    public $updateValue = [
+        'cookienotice_message',
+        'cookienotice_button_text',
+        'cookienotice_cookie_expiration',
+        'cookienotice_position',
+        'cookienotice_animation',
+        'cookienotice_text_color',
+        'cookienotice_background_color',
+        'cookienotice_enabled',
+    ];
+
+
     public function __construct() {
         $this->name = 'cookienotice';
         $this->tab = 'front_office_features';
         $this->version = '1.0.0';
         $this->author = 'ESGI';
         $this->need_instance = 0;
-        $this->ps_versions_compliancy = array(
+        $this->ps_versions_compliancy = [
             'min' => '1.6',
             'max' => _PS_VERSION_
-        );
+        ];
         $this->bootstrap = true;
 
         parent::__construct();
@@ -24,15 +36,39 @@ class CookieNotice extends Module {
     }
 
     public function install() {
-        if(!parent::install() || !Configuration::updateValue('cookienotice_message', 'Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site. Si vous continuez à utiliser ce dernier, nous considérerons que vous acceptez l&#039;utilisation des cookies.') || !$this->registerHook('leftColumn'))
+        $this->updateValue['cookienotice_message'] = "Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site. Si vous continuez à utiliser ce dernier, nous considérerons que vous acceptez l'utilisation des cookies.";
+        $this->updateValue['cookienotice_button_text'] = "J'accepte";
+        $this->updateValue['cookienotice_cookie_expiration'] = 60*60*24*30*6; // 6 mois
+        $this->updateValue['cookienotice_position'] = "Bas";
+        $this->updateValue['cookienotice_animation'] = "Aucune";
+        $this->updateValue['cookienotice_text_color'] = "#FFFFFF";
+        $this->updateValue['cookienotice_background_color'] = "#000000";
+        $this->updateValue['cookienotice_enabled'] = "Oui";
+
+
+        foreach($this->updateValue as $key => $value){
+            if(!Configuration::updateValue($key, $value)){
+                return false;   
+            }
+        }
+
+        if(!parent::install() || !$this->registerHook('header')){
             return false;
+        }
 
         return true;
     }
 
     public function uninstall() {
-        if(!parent::uninstall() || !Configuration::deleteByName('cookienotice_message'))
+        foreach($this->updateValue as $key => $value){
+            if(!Configuration::deleteByName($key)){
+                return false;   
+            }
+        }
+
+        if(!parent::uninstall()){
             return false;
+        }
 
         return true;
     }
@@ -41,36 +77,170 @@ class CookieNotice extends Module {
         $output = null;
 
         if(Tools::isSubmit('submit'.$this->name)){
-            $myoption_txt = strval(Tools::getValue('cookienotice_message'));
-            if(!$myoption_txt || empty($myoption_txt) || !Validate::isGenericName($myoption_txt))
-                $output .= $this->displayErrors($this->l('Configuration invalide'));
-            else{
-                Configuration::updateValue('cookienotice_message', $myoption_txt);
-                $output .= $this->displayConfirmation($this->l('Paramètres sauvegardés'));
+            foreach($this->updateValue as $key){
+                $option = strval(Tools::getValue($key));
+
+                if(!$option || empty($option) || !Validate::isGenericName($option)){
+                    $error = $this->l('Configuration invalide concernant: '.$key);
+                }else{
+                    Configuration::updateValue($key, $option);                    
+                    $success = $this->l('Paramètres sauvegardés');
+                }
+                unset($option);
+            }
+            if(isset($error)){
+                $output .= $this->displayError($error);   
+            }
+            if(isset($success) && !isset($error)){
+                $output .= $this->displayConfirmation($success);
             }
         }
         return $output.$this->displayForm();
     }
 
     public function displayForm() {
-        $fields_form[0]['form'] = array(
-            'legend' => array(
-                'title' => $this->l('Settings'),
-            ),
-            'input' => array(
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Texte à afficher'),
+        $fields_form[0]['form'] = [
+            'legend' => [
+                'title' => $this->l('Paramètres'),
+            ],
+            'input' => [
+                [
+                    'type' => 'radio',
+                    'label' => $this->l('Activer'),
+                    'name' => 'cookienotice_enabled',
+                    'is_bool' => true,  
+                    'values' => [
+                        [
+                            'id' => 'enabled_on',
+                            'value' => 'Oui',
+                            'label' => $this->l('Oui')
+                        ],
+                        [
+                            'id' => 'enabled_off',
+                            'value' => 'Non',
+                            'label' => $this->l('Non')
+                        ]
+                    ],
+                    'required' => true,
+                ],
+                [
+                    'type' => 'textarea',
+                    'label' => $this->l('Message'),
+                    'desc' => $this->l("Saisir le message d'avis relatif aux cookies."),
                     'name' => 'cookienotice_message',
+                    'required' => true,
+                ],
+                [
+                    'type' => 'text',
+                    'label' => $this->l('Texte du bouton'),
+                    'desc' => $this->l("Le text de l'option pour accepter l'utilisation des cookies et faire disparaitre la notification"),
+                    'name' => 'cookienotice_button_text',
                     'size' => 20,
-                    'required' => true
-                )
-            ),
-            'submit' => array(
-                'title' => $this->l('Envoyer'),
+                    'required' => true,
+                ],
+                [
+                    'type' => 'select',
+                    'label' => $this->l('Expiration des cookies'),
+                    'desc' => $this->l('La durée de stockage des cookies.'),
+                    'name' => 'cookienotice_cookie_expiration',
+                    'required' => true,
+                    'options' => [
+                        'query' => [
+                            [
+                                'time' => 60*60*24,
+                                'name' => '1 jour',
+                            ],
+                            [
+                                'time' => 60*60*24*7,
+                                'name' => '1 semaine',
+                            ],
+                            [
+                                'time' => 60*60*24*30,
+                                'name' => '1 mois',
+                            ],
+                            [
+                                'time' => 60*60*24*30*3,
+                                'name' => '3 mois',
+                            ],
+                            [
+                                'time' => 60*60*24*30*6,
+                                'name' => '6 mois',
+                            ],
+                            [
+                                'time' => 60*60*24*365,
+                                'name' => '1 année',
+                            ],
+                            [
+                                'time' => 60*60*24*365*50,
+                                'name' => 'Illimité',
+                            ],
+                        ],
+                        'id' => 'time',
+                        'name' => 'name',
+                    ],
+                ],
+                [
+                    'type' => 'radio',
+                    'label' => $this->l('Position'),
+                    'desc' => $this->l('Sélectionner la position de votre avis relatif aux cookies.'),
+                    'name' => 'cookienotice_position',
+                    'is_bool' => true,  
+                    'values' => [
+                        [
+                            'id' => 'position_top',
+                            'value' => 'Haut',
+                            'label' => $this->l('Haut')
+                        ],
+                        [
+                            'id' => 'position_bottom',
+                            'value' => 'Bas',
+                            'label' => $this->l('Bas')
+                        ]
+                    ],
+                    'required' => true,
+                ],
+                [
+                    'type' => 'radio',
+                    'label' => $this->l('Animation'),
+                    'desc' => $this->l("Animation de l'acceptation de l'avis relatif aux cookies."),
+                    'name' => 'cookienotice_animation',
+                    'values' => [
+                        [
+                            'id' => 'animation_none',
+                            'value' => 'Aucune',
+                            'label' => $this->l('Aucune')
+                        ],
+                        [
+                            'id' => 'animation_fondu',
+                            'value' => 'Fondu',
+                            'label' => $this->l('Fondu')
+                        ],
+                        [
+                            'id' => 'animation_glissement',
+                            'value' => 'Glissement',
+                            'label' => $this->l('Glissement')
+                        ]
+                    ],
+                    'required' => true,
+                ],
+                [
+                    'type' => 'color',
+                    'label' => $this->l('Couleur du texte'),
+                    'name' => 'cookienotice_text_color',
+                    'required' => true,
+                ],
+                [
+                    'type' => 'color',
+                    'label' => $this->l('Couleur de fond'),
+                    'name' => 'cookienotice_background_color',
+                    'required' => true,
+                ],
+            ],
+            'submit' => [
+                'title' => $this->l('Enregistrer'),
                 'class' => 'btn btn-default pull-right'
-            )
-        );
+            ]
+        ];
 
         $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
 
@@ -91,32 +261,39 @@ class CookieNotice extends Module {
         $helper->show_toolbar = true;        // false -> remove toolbar
         $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
         $helper->submit_action = 'submit'.$this->name;
-        $helper->toolbar_btn = array(
-            'save' =>
-            array(
+        $helper->toolbar_btn = [
+            'save' => [
                 'desc' => $this->l('Save'),
                 'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.
                 '&token='.Tools::getAdminTokenLite('AdminModules'),
-            ),
-            'back' => array(
+            ],
+            'back' => [
                 'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
                 'desc' => $this->l('Back to list')
-            )
-        );
+            ]
+        ];
 
-        // Load current value
-        $helper->fields_value['cookienotice_message'] = Configuration::get('cookienotice_message');
+        foreach($this->updateValue as $key){
+            // Load current value
+            $helper->fields_value[$key] = Configuration::get($key);
+        }
 
         return $helper->generateForm($fields_form);
     }
 
-    public function hookDisplayLeftColumn($params) {
-        $this->context->smarty->assign(
-            array(
-                'my_module_name' => Configuration::get('cookienotice_message')
-            )
-        );
+    public function hookDisplayHeader() {
+        $smartyValues = [];
+        foreach($this->updateValue as $key){
+            $smartyValues[$key] = Configuration::get($key);
+        }
+        if(isset($_COOKIE['cookienotice_accepted'])){
+            $smartyValues['cookienotice_accepted'] = 'on';
+        }else $smartyValues['cookienotice_accepted'] = 'off';
+        
+        $this->context->smarty->assign($smartyValues);
 
+        $this->context->controller->addCSS($this->_path.'css/cookienotice.css', 'all');
+        $this->context->controller->addJS($this->_path.'js/cookienotice.js');
         return $this->display(__FILE__, 'cookienotice.tpl');
     }
 }

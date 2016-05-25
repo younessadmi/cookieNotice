@@ -1,0 +1,16 @@
+.cookienotice_block_home {
+    position: fixed !important;
+    width: 100%;
+    background: black;
+    z-index: 9999;
+    padding: 10px;
+}
+
+.cookienotice_block_home p.cookienotice_message{
+    color: white;
+    font-size: 17px;
+}
+
+.cookienotice_block_home p.cookienotice_button_text{
+    text-align:right;   
+}
