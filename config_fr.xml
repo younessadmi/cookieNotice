@@ -2,7 +2,7 @@
 <module>
 	<name>cookienotice</name>
 	<displayName><![CDATA[Cookie Notice]]></displayName>
-	<version><![CDATA[1.0.1]]></version>
+	<version><![CDATA[1.1.0]]></version>
 	<description><![CDATA[Cookie Notice vous permet d&#039;informer de mani&egrave;re &eacute;l&eacute;gante vos utilisateurs que vous utilisez des cookies afin d&#039;&ecirc;tre en accord avec la loi europ&eacute;enne]]></description>
 	<author><![CDATA[ESGI]]></author>
 	<tab><![CDATA[front_office_features]]></tab>
