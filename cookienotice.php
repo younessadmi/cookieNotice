@@ -11,14 +11,13 @@ class CookieNotice extends Module {
         'cookienotice_animation',
         'cookienotice_text_color',
         'cookienotice_background_color',
-        'cookienotice_enabled',
     ];
 
 
     public function __construct() {
         $this->name = 'cookienotice';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->author = 'ESGI';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = [
@@ -43,7 +42,6 @@ class CookieNotice extends Module {
         $this->updateValue['cookienotice_animation'] = "Aucune";
         $this->updateValue['cookienotice_text_color'] = "#FFFFFF";
         $this->updateValue['cookienotice_background_color'] = "#000000";
-        $this->updateValue['cookienotice_enabled'] = "Oui";
 
 
         foreach($this->updateValue as $key => $value){
@@ -60,7 +58,7 @@ class CookieNotice extends Module {
     }
 
     public function uninstall() {
-        foreach($this->updateValue as $key => $value){
+        foreach($this->updateValue as $key){
             if(!Configuration::deleteByName($key)){
                 return false;   
             }
@@ -104,25 +102,6 @@ class CookieNotice extends Module {
                 'title' => $this->l('Paramètres'),
             ],
             'input' => [
-                [
-                    'type' => 'radio',
-                    'label' => $this->l('Activer'),
-                    'name' => 'cookienotice_enabled',
-                    'is_bool' => true,  
-                    'values' => [
-                        [
-                            'id' => 'enabled_on',
-                            'value' => 'Oui',
-                            'label' => $this->l('Oui')
-                        ],
-                        [
-                            'id' => 'enabled_off',
-                            'value' => 'Non',
-                            'label' => $this->l('Non')
-                        ]
-                    ],
-                    'required' => true,
-                ],
                 [
                     'type' => 'textarea',
                     'label' => $this->l('Message'),

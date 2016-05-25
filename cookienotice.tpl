@@ -1,4 +1,4 @@
-{if isset($cookienotice_enabled) && $cookienotice_enabled && $cookienotice_enabled == "Oui" && $cookienotice_accepted == 'off'}
+{if $cookienotice_accepted == 'off'}
 <div class="cookienotice_block_home">
     <p class="cookienotice_message">{$cookienotice_message}</p>
     <p class="cookienotice_button_text">
@@ -14,6 +14,5 @@
     <p class="cookienotice_animation">{$cookienotice_animation}</p>
     <p class="cookienotice_text_color">{$cookienotice_text_color}</p>
     <p class="cookienotice_background_color">{$cookienotice_background_color}</p>
-    <p class="cookienotice_enabled">{$cookienotice_enabled}</p>
     <p class="cookienotice_accepted">{$cookienotice_accepted}</p>
 </section>
