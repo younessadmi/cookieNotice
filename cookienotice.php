@@ -19,7 +19,7 @@ class CookieNotice extends Module {
     public function __construct() {
         $this->name = 'cookienotice';
         $this->tab = 'front_office_features';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'ESGI';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = [
@@ -171,12 +171,12 @@ class CookieNotice extends Module {
                     'values' => [
                         [
                             'id' => 'law_yes',
-                            'value' => true,
+                            'value' => 'Oui',
                             'label' => $this->l('Oui')
                         ],
                         [
                             'id' => 'law_no',
-                            'value' => false,
+                            'value' => 'Non',
                             'label' => $this->l('Non')
                         ]
                     ],
