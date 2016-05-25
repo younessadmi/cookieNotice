@@ -169,12 +169,12 @@ class CookieNotice extends Module {
                     'values' => [
                         [
                             'id' => 'law_yes',
-                            'value' => 'Oui',
+                            'value' => true,
                             'label' => $this->l('Oui')
                         ],
                         [
                             'id' => 'law_no',
-                            'value' => 'Non',
+                            'value' => false,
                             'label' => $this->l('Non')
                         ]
                     ],
