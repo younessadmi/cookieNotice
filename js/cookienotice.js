@@ -22,7 +22,7 @@ $(document).ready(function(){
             setCookie(cookiename, 'accepted', timeToHideTheNotification*1000);
         });
     }
-    console.log(cookielaw);
+
     if(cookielaw == true){
         $('.cookienotice_block_home .cookienotice_button_text').append("<a class='btn btn-default' href="+cookielawlink+" target='_blank'>En savoir plus</a>");
     }
